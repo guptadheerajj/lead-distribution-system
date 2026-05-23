@@ -1,0 +1,60 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model Service {
+  id              Int               @id @default(autoincrement())
+  name            String            @unique
+  leads           Lead[]
+  allocationState AllocationState[]
+}
+
+model Provider {
+  id              Int              @id @default(autoincrement())
+  name            String           @unique
+  monthlyQuota    Int              @default(10)
+  leadsReceived   Int              @default(0)
+  leadAssignments LeadAssignment[]
+}
+
+model Lead {
+  id           Int              @id @default(autoincrement())
+  customerName String
+  phone        String
+  city         String
+  description  String
+  createdAt    DateTime         @default(now())
+  service      Service          @relation(fields: [serviceId], references: [id])
+  serviceId    Int
+  assignments  LeadAssignment[]
+
+  @@unique([phone, serviceId]) // prevents duplicate lead for same phone + service
+}
+
+model LeadAssignment {
+  id         Int      @id @default(autoincrement())
+  lead       Lead     @relation(fields: [leadId], references: [id])
+  leadId     Int
+  provider   Provider @relation(fields: [providerId], references: [id])
+  providerId Int
+  assignedAt DateTime @default(now())
+
+  @@unique([leadId, providerId]) // same provider can't get same lead twice
+}
+
+model AllocationState {
+  id        Int     @id @default(autoincrement())
+  service   Service @relation(fields: [serviceId], references: [id])
+  serviceId Int     @unique // one row per service
+  lastIndex Int     @default(0) // tracks where round-robin is
+}
+
+model WebhookEvent {
+  id          Int      @id @default(autoincrement())
+  eventId     String   @unique // prevents duplicate webhook processing
+  processedAt DateTime @default(now())
+}

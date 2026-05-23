@@ -56,7 +56,7 @@ export default function ProviderDashboard() {
 
 	const pushToast = (message: string) => {
 		const id = `${Date.now()}-${Math.random().toString(16).slice(2)}`;
-		setToasts((prev) => [{ id, message }, ...prev]);
+		setToasts((prev) => [...prev, { id, message }]);
 		setTimeout(() => {
 			setToasts((prev) => prev.filter((toast) => toast.id !== id));
 		}, 4000);
@@ -98,15 +98,21 @@ export default function ProviderDashboard() {
 						if (!prior) {
 							continue;
 						}
-						if (provider.leadsReceived > prior.leadsReceived) {
+						const delta = provider.leadsReceived - prior.leadsReceived;
+						if (delta > 0) {
 							changed = true;
 							highlightProvider(provider.id);
 							const latestAssignment = provider.leadAssignments[0];
 							const serviceName =
 								latestAssignment?.lead?.service?.name ?? "Unknown service";
 							pushToast(
-								`${provider.name} received a new lead — ${serviceName}`,
+								delta === 1
+									? `${provider.name} received a new lead — ${serviceName}`
+									: `${provider.name} received ${delta} new leads — ${serviceName}`,
 							);
+						} else if (delta < 0) {
+							changed = true;
+							pushToast(`Quota reset for ${provider.name}`);
 						}
 					}
 				}

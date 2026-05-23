@@ -223,7 +223,7 @@ export default function TestToolsPanel() {
 
 											return (
 												<ul className="mt-3 space-y-2 text-xs text-zinc-600">
-													{results.slice(0, 6).map((result, index) => {
+													{results.map((result, index) => {
 														if (!isRecord(result)) {
 															return null;
 														}

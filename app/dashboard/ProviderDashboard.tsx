@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 
 type LeadSummary = {
 	customerName: string;
@@ -29,36 +29,38 @@ export default function ProviderDashboard() {
 	const [status, setStatus] = useState<LoadState>("idle");
 	const [error, setError] = useState<string | null>(null);
 
-	const loadProviders = useCallback(async () => {
+	useEffect(() => {
 		setStatus("loading");
 		setError(null);
 
-		try {
-			const response = await fetch("/api/providers", {
-				method: "GET",
-				cache: "no-store",
-			});
-			const body = await response.json().catch(() => ({}));
+		const source = new EventSource("/api/providers/updates");
 
-			if (!response.ok) {
-				throw new Error(body?.error ?? "Unable to load provider data.");
+		source.onmessage = (event) => {
+			try {
+				const data = JSON.parse(event.data) as Provider[];
+				setProviders(data);
+				setStatus("ready");
+				setError(null);
+			} catch {
+				setStatus("error");
+				setError("Unable to parse provider updates.");
 			}
+		};
 
-			setProviders(body.providers ?? []);
-			setStatus("ready");
-		} catch (err) {
+		source.onerror = () => {
 			setStatus("error");
-			setError(err instanceof Error ? err.message : "Request failed.");
-		}
-	}, []);
+			setError("Realtime connection lost. Please refresh the page.");
+			source.close();
+		};
 
-	useEffect(() => {
-		loadProviders();
-	}, [loadProviders]);
+		return () => {
+			source.close();
+		};
+	}, []);
 
 	return (
 		<div className="flex flex-col gap-8">
-			<div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+			<div className="flex flex-col gap-4">
 				<div>
 					<p className="text-xs font-semibold uppercase tracking-[0.3em] text-zinc-500">
 						Provider dashboard
@@ -70,13 +72,6 @@ export default function ProviderDashboard() {
 						Review quotas and the latest leads assigned to each provider.
 					</p>
 				</div>
-				<button
-					onClick={loadProviders}
-					disabled={status === "loading"}
-					className="inline-flex h-10 items-center justify-center rounded-full border border-zinc-900/10 bg-white/80 px-4 text-xs font-semibold text-zinc-900 transition hover:-translate-y-0.5 disabled:cursor-not-allowed disabled:opacity-60"
-				>
-					{status === "loading" ? "Refreshing..." : "Refresh"}
-				</button>
 			</div>
 
 			{status === "error" ? (

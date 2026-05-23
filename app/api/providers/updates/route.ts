@@ -2,6 +2,7 @@ import { prisma } from "@/lib/prisma";
 
 export const dynamic = "force-dynamic";
 export const runtime = "nodejs";
+export const maxDuration = 60;
 
 const encoder = new TextEncoder();
 
@@ -37,7 +38,7 @@ export async function GET(request: Request) {
 				try {
 					const providers = await fetchProviders();
 					controller.enqueue(encoder.encode(toSsePayload(providers)));
-				} catch (error) {
+				} catch {
 					controller.enqueue(
 						encoder.encode(
 							`event: error\ndata: ${JSON.stringify({

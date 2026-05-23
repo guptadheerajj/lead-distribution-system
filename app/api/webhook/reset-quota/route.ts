@@ -4,6 +4,8 @@ import { z } from "zod";
 
 import { prisma } from "@/lib/prisma";
 
+export const runtime = "nodejs";
+
 const payloadSchema = z.object({
 	eventId: z.string().trim().min(1),
 	providerId: z.coerce.number().int().positive().optional(),
@@ -69,8 +71,6 @@ export async function POST(request: Request) {
 				});
 			}
 
-			await tx.allocationState.updateMany({ data: { lastIndex: 0 } });
-
 			return { status: "processed" as const };
 		});
 
@@ -86,7 +86,7 @@ export async function POST(request: Request) {
 		}
 
 		return NextResponse.json({ message: "Quota reset successful" });
-	} catch (error) {
+	} catch {
 		return NextResponse.json(
 			{ error: "Failed to reset quota." },
 			{ status: 500 },

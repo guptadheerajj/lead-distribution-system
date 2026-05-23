@@ -12,11 +12,13 @@ const globalForPrisma = globalThis as unknown as {
 	prisma: PrismaClient | undefined;
 };
 
+const prismaLog = process.env.PRISMA_QUERY_LOG === "true" ? ["query" as const] : [];
+
 export const prisma =
 	globalForPrisma.prisma ??
 	new PrismaClient({
 		adapter,
-		log: process.env.NODE_ENV === "development" ? ["query"] : [],
+		log: prismaLog,
 	});
 
 if (process.env.NODE_ENV !== "production") {

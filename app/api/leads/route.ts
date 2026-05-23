@@ -5,6 +5,8 @@ import { z } from "zod";
 import { AllocationError, assignProviders } from "@/lib/allocate";
 import { prisma } from "@/lib/prisma";
 
+export const runtime = "nodejs";
+
 const leadSchema = z.object({
 	customerName: z.string().trim().min(1),
 	phone: z.string().trim().min(1),

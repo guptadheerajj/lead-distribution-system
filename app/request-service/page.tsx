@@ -4,6 +4,9 @@ import SiteHeader from "../components/SiteHeader";
 import { prisma } from "@/lib/prisma";
 import RequestServiceForm from "./RequestServiceForm";
 
+export const dynamic = "force-dynamic";
+export const runtime = "nodejs";
+
 export default async function RequestServicePage() {
 	const services = await prisma.service.findMany({
 		orderBy: { id: "asc" },

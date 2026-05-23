@@ -31,17 +31,18 @@ type Toast = {
 
 export default function ProviderDashboard() {
 	const [providers, setProviders] = useState<Provider[]>([]);
-	const [status, setStatus] = useState<LoadState>("idle");
+	const [status, setStatus] = useState<LoadState>("loading");
 	const [error, setError] = useState<string | null>(null);
 	const [lastUpdatedAt, setLastUpdatedAt] = useState<string | null>(null);
 	const [updatePulse, setUpdatePulse] = useState(false);
-	const [highlightTick, setHighlightTick] = useState(0);
+	const [highlightedProviderIds, setHighlightedProviderIds] = useState<Set<number>>(
+		() => new Set(),
+	);
 	const [toasts, setToasts] = useState<Toast[]>([]);
 	const pulseTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 	const highlightTimeoutsRef = useRef(
 		new Map<number, ReturnType<typeof setTimeout>>(),
 	);
-	const recentlyUpdatedRef = useRef(new Set<number>());
 	const previousProvidersRef = useRef<Provider[]>([]);
 
 	const triggerPulse = () => {
@@ -63,25 +64,29 @@ export default function ProviderDashboard() {
 	};
 
 	const highlightProvider = (providerId: number) => {
-		recentlyUpdatedRef.current.add(providerId);
-		setHighlightTick((value) => value + 1);
+		setHighlightedProviderIds((current) => {
+			const next = new Set(current);
+			next.add(providerId);
+			return next;
+		});
 
 		const existing = highlightTimeoutsRef.current.get(providerId);
 		if (existing) {
 			clearTimeout(existing);
 		}
 		const timeout = setTimeout(() => {
-			recentlyUpdatedRef.current.delete(providerId);
 			highlightTimeoutsRef.current.delete(providerId);
-			setHighlightTick((value) => value + 1);
+			setHighlightedProviderIds((current) => {
+				const next = new Set(current);
+				next.delete(providerId);
+				return next;
+			});
 		}, 2000);
 		highlightTimeoutsRef.current.set(providerId, timeout);
 	};
 
 	useEffect(() => {
-		setStatus("loading");
-		setError(null);
-
+		const highlightTimeouts = highlightTimeoutsRef.current;
 		const source = new EventSource("/api/providers/updates");
 
 		source.onmessage = (event) => {
@@ -142,8 +147,8 @@ export default function ProviderDashboard() {
 			if (pulseTimeoutRef.current) {
 				clearTimeout(pulseTimeoutRef.current);
 			}
-			highlightTimeoutsRef.current.forEach((timeout) => clearTimeout(timeout));
-			highlightTimeoutsRef.current.clear();
+			highlightTimeouts.forEach((timeout) => clearTimeout(timeout));
+			highlightTimeouts.clear();
 		};
 	}, []);
 
@@ -206,7 +211,7 @@ export default function ProviderDashboard() {
 						provider.monthlyQuota - provider.leadsReceived,
 						0,
 					);
-					const isHighlighted = recentlyUpdatedRef.current.has(provider.id);
+					const isHighlighted = highlightedProviderIds.has(provider.id);
 
 					return (
 						<div

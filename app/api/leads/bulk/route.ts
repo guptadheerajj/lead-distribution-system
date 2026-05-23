@@ -5,6 +5,8 @@ import { NextResponse } from "next/server";
 import { assignProviders, AllocationError } from "@/lib/allocate";
 import { prisma } from "@/lib/prisma";
 
+export const runtime = "nodejs";
+
 const payloadSchema = z.object({
 	count: z.coerce.number().int().positive().max(50).default(10),
 });

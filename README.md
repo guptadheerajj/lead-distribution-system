@@ -7,7 +7,7 @@ The app lets customers submit service enquiries, stores them as leads in Postgre
 ## Submission Links
 
 - GitHub Repository: https://github.com/guptadheerajj/lead-distribution-system
-- Live Demo URL: `https://your-vercel-url.vercel.app`
+- Live Demo URL: `https://lead-distribution-system-six.vercel.app/`
 
 ## Tech Stack
 

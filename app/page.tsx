@@ -1,4 +1,5 @@
 import Link from "next/link";
+import SiteHeader from "./components/SiteHeader";
 
 export default function Home() {
 	return (
@@ -20,27 +21,7 @@ export default function Home() {
 				}}
 			/>
 
-			<header className="mx-auto flex w-full max-w-6xl items-center justify-between px-6 pt-10">
-				<div className="flex items-center gap-3">
-					<div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-zinc-900 text-sm font-semibold text-white">
-						LD
-					</div>
-					<div>
-						<p className="text-xs uppercase tracking-[0.4em] text-zinc-500">
-							Prowider
-						</p>
-						<p className="text-lg font-semibold">Lead Distribution</p>
-					</div>
-				</div>
-				<div className="hidden items-center gap-3 text-xs font-medium text-zinc-600 sm:flex">
-					<span className="rounded-full border border-zinc-900/10 bg-white/80 px-3 py-1">
-						Prisma + Postgres
-					</span>
-					<span className="rounded-full border border-zinc-900/10 bg-white/80 px-3 py-1">
-						Realtime ready
-					</span>
-				</div>
-			</header>
+			<SiteHeader title="Lead Distribution" />
 
 			<main className="mx-auto grid w-full max-w-6xl gap-12 px-6 pb-20 pt-12 lg:grid-cols-[1.1fr_0.9fr]">
 				<section className="flex flex-col gap-8">
@@ -56,6 +37,14 @@ export default function Home() {
 							real-time dashboards. The system stays consistent under
 							concurrency and keeps provider rotations honest.
 						</p>
+						<div className="flex flex-wrap items-center gap-2 text-xs font-medium text-zinc-600">
+							<span className="rounded-full border border-zinc-900/10 bg-white/80 px-3 py-1">
+								Prisma + Postgres
+							</span>
+							<span className="rounded-full border border-zinc-900/10 bg-white/80 px-3 py-1">
+								Realtime ready
+							</span>
+						</div>
 					</div>
 
 					<div className="flex flex-col gap-3 sm:flex-row">
@@ -70,6 +59,12 @@ export default function Home() {
 							href="/dashboard"
 						>
 							View Provider Dashboard
+						</Link>
+						<Link
+							className="inline-flex h-12 items-center justify-center rounded-full border border-zinc-900/10 bg-white/80 px-6 text-sm font-semibold text-zinc-900 shadow-sm transition-transform duration-200 hover:-translate-y-0.5"
+							href="/test-tools"
+						>
+							Open Test Tools
 						</Link>
 					</div>
 
@@ -225,6 +220,30 @@ export default function Home() {
 						<Link className="hover:text-zinc-900" href="/test-tools">
 							Test Tools
 						</Link>
+						<a
+							className="hover:text-zinc-900"
+							href="https://github.com/guptadheerajj/lead-distribution-system"
+							target="_blank"
+							rel="noreferrer"
+						>
+							Source Code
+						</a>
+						<a
+							className="hover:text-zinc-900"
+							href="https://github.com/guptadheerajj"
+							target="_blank"
+							rel="noreferrer"
+						>
+							GitHub
+						</a>
+						<a
+							className="hover:text-zinc-900"
+							href="https://linkedin.com/in/guptadheerajj"
+							target="_blank"
+							rel="noreferrer"
+						>
+							LinkedIn
+						</a>
 					</div>
 				</div>
 			</footer>

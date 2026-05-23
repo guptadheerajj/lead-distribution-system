@@ -1,4 +1,5 @@
 import Link from "next/link";
+import SiteHeader from "../components/SiteHeader";
 
 import TestToolsPanel from "./TestToolsPanel";
 
@@ -24,31 +25,49 @@ export default function TestToolsPage() {
 				}}
 			/>
 
-			<header className="mx-auto flex w-full max-w-6xl items-center justify-between px-6 pt-10">
-				<div className="flex items-center gap-3">
-					<div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-zinc-900 text-sm font-semibold text-white">
-						LD
-					</div>
-					<div>
-						<p className="text-xs uppercase tracking-[0.4em] text-zinc-500">
-							Prowider
-						</p>
-						<p className="text-lg font-semibold">Test Tools</p>
-					</div>
-				</div>
-				<div className="flex flex-wrap items-center gap-3 text-xs font-semibold text-zinc-700">
-					<Link className="hover:text-zinc-900" href="/request-service">
-						Request Service
-					</Link>
-					<Link className="hover:text-zinc-900" href="/dashboard">
-						Dashboard
-					</Link>
-				</div>
-			</header>
+			<SiteHeader title="Test Tools" />
 
 			<main className="mx-auto w-full max-w-6xl px-6 pb-16 pt-12">
 				<TestToolsPanel />
 			</main>
+
+			<footer className="mx-auto w-full max-w-6xl px-6 pb-12 text-xs text-zinc-600">
+				<div className="flex flex-col items-start justify-between gap-4 border-t border-zinc-900/10 pt-6 sm:flex-row sm:items-center">
+					<p>Lead Distribution System - evaluation build</p>
+					<div className="flex flex-wrap gap-3 text-xs font-semibold text-zinc-700">
+						<Link className="hover:text-zinc-900" href="/request-service">
+							Request Service
+						</Link>
+						<Link className="hover:text-zinc-900" href="/dashboard">
+							Dashboard
+						</Link>
+						<a
+							className="hover:text-zinc-900"
+							href="https://github.com/guptadheerajj/lead-distribution-system"
+							target="_blank"
+							rel="noreferrer"
+						>
+							Source Code
+						</a>
+						<a
+							className="hover:text-zinc-900"
+							href="https://github.com/guptadheerajj"
+							target="_blank"
+							rel="noreferrer"
+						>
+							GitHub
+						</a>
+						<a
+							className="hover:text-zinc-900"
+							href="https://linkedin.com/in/guptadheerajj"
+							target="_blank"
+							rel="noreferrer"
+						>
+							LinkedIn
+						</a>
+					</div>
+				</div>
+			</footer>
 		</div>
 	);
 }
